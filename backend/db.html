@@ -1,0 +1,23 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body style="">
+Deploying a mysql on docker:
+<div><br>
+</div>
+<div>Steps:</div>
+<div><br>
+</div>
+<div>
+<div>
+<ol>
+<li>docker pull mysql</li><li>docker run --name &lt;mysql-container&gt; -e MYSQL_ROOT_PASSWORD=&lt;password&gt; -p 3306:3306 -d mysql</li><li>docker cp path/to/db_dump.sql &lt;mysql-container&gt;:/db_dump.sql</li><li>docker exec -it &lt;mysql-container&gt; mysql -uroot -p</li><li>create database &lt;db_name&gt;</li><li>use db_name;</li><li>source /path/to/mysqldump</li></ol>
+</div>
+<div><br>
+</div>
+<div><br>
+</div>
+</div>
+</body>
+</html>
