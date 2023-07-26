@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func initializeDatabase() {
+func InitializeDatabase() {
 	db, err := gorm.Open(mysql.Open("your-database-connection-string"), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database")
@@ -16,5 +16,4 @@ func initializeDatabase() {
 	if err != nil {
 		panic("Failed to auto-migrate the table")
 	}
-
 }
