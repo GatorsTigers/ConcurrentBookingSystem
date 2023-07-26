@@ -1,4 +1,4 @@
-module github.com/GatorsTigers/ConcurrentBookingSystem/backend
+module github.com/GatorsTigers/ConcurrentBookingSystem
 
 go 1.20
 

@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/GatorsTigers/ConcurrentBookingSystem/backend/models"
+	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 	"gorm.io/driver/mysql" // Or any other database driver you are using
 	"gorm.io/gorm"
 )
