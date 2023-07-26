@@ -1,4 +1,4 @@
-package model
+package models
 
 type Show struct {
 	ShowId   uint   `gorm:"primaryKey"`

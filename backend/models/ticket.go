@@ -1,4 +1,4 @@
-package model
+package models
 
 type Ticket struct {
 	TicketId             uint `gorm:"primaryKey"`

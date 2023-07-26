@@ -1,7 +1,7 @@
 package models
 
-type theater struct {
-	TheaterId       int       `json:"theaterId" gorm:"primary_key;"`
-	TheaterName     string    `json:"theaterName"`
-	CityId 			int       `json:"cityId"`
+type Theater struct {
+	TheaterId   int    `json:"theaterId" gorm:"primary_key;"`
+	TheaterName string `json:"theaterName"`
+	CityId      int    `json:"cityId"`
 }
