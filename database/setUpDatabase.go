@@ -7,12 +7,15 @@ import (
 )
 
 func InitializeDatabase() {
-	db, err := gorm.Open(mysql.Open("your-database-connection-string"), &gorm.Config{})
+	dsn := "root:gatortiger@tcp(localhost:3306)/ConcurrentBookingSystem"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Failed to connect to the database")
+		panic(err.Error())
 	}
 
-	err = db.AutoMigrate(&models.City{})
+	err = db.AutoMigrate(&models.City{}, &models.Show{}, &models.Theater{}, &models.User{}, &models.TheaterShow{}, &models.Screen{}, &models.Seat{},
+		&models.ScreenShowSchedule{}, &models.Ticket{})
+
 	if err != nil {
 		panic("Failed to auto-migrate the table")
 	}
