@@ -3,10 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
+	"github.com/GatorsTigers/ConcurrentBookingSystem/config"
+	_db "github.com/GatorsTigers/ConcurrentBookingSystem/database"
 )
 
 func main() {
-	database.InitializeDatabase()
-	fmt.Print("CBS")
+	config := config.GetConfig()
+	db := _db.Database{}
+	db.InitializeDatabase(config)
+	db.CreateTables()
+	db.InsertDataIntoTables()
+	fmt.Printf("Successfullty Inserted")
 }
