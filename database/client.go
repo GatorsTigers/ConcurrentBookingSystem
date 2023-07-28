@@ -10,17 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type DatabaseClient interface {
-	Ready() bool
-	CreateTables() error
-	InsertDataIntoTables() error
-}
-
 type Client struct {
 	DB *gorm.DB
 }
 
-func NewDatabaseClient(config *config.Config) (DatabaseClient, error) {
+func NewDatabaseClient(config *config.Config) (Client, error) {
 	var database *gorm.DB
 	var err error
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
