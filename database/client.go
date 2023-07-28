@@ -10,11 +10,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type Database struct {
-	dbInstance *gorm.DB
+type DatabaseClient interface {
+	Ready() bool
+	CreateTables() error
+	InsertDataIntoTables() error
 }
 
-func (db *Database) InitializeDatabase(config *config.Config) {
+type Client struct {
+	DB *gorm.DB
+}
+
+func NewDatabaseClient(config *config.Config) (DatabaseClient, error) {
 	var database *gorm.DB
 	var err error
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
@@ -31,11 +37,26 @@ func (db *Database) InitializeDatabase(config *config.Config) {
 	}
 
 	fmt.Println("Connected to db")
-	db.dbInstance = database
+	client := Client{
+		DB: database,
+	}
+	return client, nil
 }
 
-func (db *Database) CreateTables() {
-	err := db.dbInstance.AutoMigrate(
+func (c Client) Ready() bool {
+	var ready string
+	txn := c.DB.Raw("SELECT 1 as ready").Scan(&ready)
+	if txn.Error != nil {
+		return false
+	}
+	if ready == "1" {
+		return true
+	}
+	return false
+}
+
+func (c Client) CreateTables() error {
+	err := c.DB.AutoMigrate(
 		&models.City{},
 		&models.Show{},
 		&models.Theater{},
@@ -48,11 +69,12 @@ func (db *Database) CreateTables() {
 	)
 
 	if err != nil {
-		panic("Failed to auto-migrate the table")
+		return fmt.Errorf("failed to auto-migrate the table")
 	}
+	return nil
 }
 
-func (db *Database) InsertDataIntoTables() {
+func (c Client) InsertDataIntoTables() error {
 	uuid := uuid.New()
 	user := &models.User{
 		EmailId: "jack@gmail.com",
@@ -62,6 +84,13 @@ func (db *Database) InsertDataIntoTables() {
 		CityId:   uuid.ID(),
 		CityName: "NewYork",
 	}
-	db.dbInstance.Save(&user)
-	db.dbInstance.Save(&city)
+	txn := c.DB.Save(&user)
+	if txn.Error != nil {
+		return txn.Error
+	}
+	txn = c.DB.Save(&city)
+	if txn.Error != nil {
+		return txn.Error
+	}
+	return nil
 }

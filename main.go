@@ -1,17 +1,20 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/config"
-	_db "github.com/GatorsTigers/ConcurrentBookingSystem/database"
+	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
 )
 
 func main() {
 	config := config.GetConfig()
-	db := _db.Database{}
-	db.InitializeDatabase(config)
+	db, err := database.NewDatabaseClient(config)
+	if err != nil {
+		log.Fatalf("failed to initialize daatabase Client: %s", err)
+	}
+
 	db.CreateTables()
 	db.InsertDataIntoTables()
-	fmt.Printf("Successfullty Inserted")
+	log.Printf("Successfullty Inserted")
 }
