@@ -1,6 +1,7 @@
 package models
 
 type City struct {
-	CityId   uint32 `json:"cityId" gorm:"primary_key;"`
-	CityName string `json:"cityName"`
+	CityName string `json:"cityName" gorm:"primary_key;size:100"`
+	State    string `json:"state"`
+	Country  string `json:"country"`
 }
