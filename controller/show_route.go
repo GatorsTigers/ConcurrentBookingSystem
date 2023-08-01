@@ -15,9 +15,9 @@ func AddShows(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse city response",
 		})
-		shows, _ := database.CreateShows(showsRequest)
-		context.JSON(http.StatusOK, shows)
 	}
+	shows, _ := database.CreateShows(showsRequest)
+	context.JSON(http.StatusOK, shows)
 }
 
 func GetShows(context *gin.Context) {
