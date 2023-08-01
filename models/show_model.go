@@ -1,7 +1,7 @@
 package models
 
 type Show struct {
-	ShowId   uint32 `gorm:"primaryKey"`
-	ShowType string `gorm:"not null"`
-	ShowName string `gorm:"not null"`
+	ShowId   uint32 `json:"showId" gorm:"primaryKey"`
+	ShowType string `json:"showType"`
+	ShowName string `json:"showName"`
 }

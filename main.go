@@ -34,6 +34,10 @@ func serveApplication() {
 	screen.POST("", controller.AddScreens)
 	screen.GET("", controller.ShowScreens)
 
+	show := router.Group("/show")
+	show.POST("", controller.AddShows)
+	show.GET("", controller.GetShows)
+
 	router.Run(":8000")
 	log.Println("Server running on port 8000")
 }

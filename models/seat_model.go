@@ -5,5 +5,5 @@ type Seat struct {
 	SeatName            string `json:"seatName"`
 	ScreenCompReferName string `json:"screenName" gorm:"not null"`
 	TheaterCompReferId  uint32 `json:"theaterId" gorm:"not null"`
-	Screen              Screen `gorm:"ForeignKey:ScreenCompReferName,TheaterCompReferId;References:ScreenName,TheaterReferId"`
+	Screen              Screen `json:"-"  gorm:"ForeignKey:ScreenCompReferName,TheaterCompReferId;References:ScreenName,TheaterReferId"`
 }

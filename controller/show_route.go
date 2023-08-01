@@ -8,23 +8,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddTheaters(context *gin.Context) {
-	var theaters []models.Theater
-	if err := context.BindJSON(&theaters); err != nil {
+func AddShows(context *gin.Context) {
+	var showsRequest []models.Show
+
+	if err := context.BindJSON(&showsRequest); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse city response",
 		})
+		shows, _ := database.CreateShows(showsRequest)
+		context.JSON(http.StatusOK, shows)
 	}
-	theaterResult, _ := database.CreateTheaters(theaters)
-	context.JSON(http.StatusOK, theaterResult)
 }
 
-func ShowTheaters(context *gin.Context) {
-	theaters, err := database.ShowTheaters()
+func GetShows(context *gin.Context) {
+	shows, err := database.GetShows()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get cities",
 		})
 	}
-	context.JSON(http.StatusOK, theaters)
+	context.JSON(http.StatusOK, shows)
 }
