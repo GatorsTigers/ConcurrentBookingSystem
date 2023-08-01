@@ -25,9 +25,15 @@ func serveApplication() {
 	cityGroup := router.Group("/city")
 	cityGroup.POST("", controller.CreateCities)
 	cityGroup.GET("", controller.ShowCities)
+
 	theater := router.Group("/theater")
 	theater.POST("", controller.AddTheaters)
 	theater.GET("", controller.ShowTheaters)
+
+	screen := router.Group("/screen")
+	screen.POST("", controller.AddScreens)
+	screen.GET("", controller.ShowScreens)
+
 	router.Run(":8000")
 	log.Println("Server running on port 8000")
 }
