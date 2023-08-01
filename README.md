@@ -26,3 +26,20 @@ Concurrent ticket booking system.
 > go get -u gorm.io/gorm
 > go get -u gorm.io/driver/mysql
 
+### Dev : Debugging Application in VS CODE
+> Go to run and debug in the side bar
+> Click on create a launch.json file 
+> Add below text in the launch.json file
+```{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "main.go"
+        } 
+    ]
+}
+```
