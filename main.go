@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-
+	log.Printf("Successfullty Inserted")
 	config := config.GetConfig()
 	database.InitDB(config)
 	client := database.DbInstance.GetDB()
@@ -22,8 +22,12 @@ func main() {
 
 func serveApplication() {
 	router := gin.Default()
-	router.POST("/addCities", controller.CreateCities)
-	router.GET("/showCities", controller.ShowCities)
+	cityGroup := router.Group("/city")
+	cityGroup.POST("", controller.CreateCities)
+	cityGroup.GET("", controller.ShowCities)
+	theater := router.Group("/theater")
+	theater.POST("", controller.AddTheaters)
+	theater.GET("", controller.ShowTheaters)
 	router.Run(":8000")
 	log.Println("Server running on port 8000")
 }
