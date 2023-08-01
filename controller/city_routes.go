@@ -9,14 +9,22 @@ import (
 )
 
 func CreateCities(context *gin.Context) {
-	var cityJson []models.City
-	if err := context.BindJSON(&cityJson); err != nil {
+	var cityJson []*models.City
+	err := context.BindJSON(&cityJson)
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse city response",
 		})
+	} else {
+		cities, err := database.CreateCities(cityJson)
+		if err != nil {
+			context.JSON(http.StatusConflict, gin.H{
+				"error": "this city already exists",
+			})
+		} else {
+			context.JSON(http.StatusOK, cities)
+		}
 	}
-	cities, _ := database.CreateCities(cityJson)
-	context.JSON(http.StatusOK, cities)
 }
 
 func ShowCities(context *gin.Context) {
@@ -25,6 +33,8 @@ func ShowCities(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get cities",
 		})
+	} else {
+		context.JSON(http.StatusOK, cities)
 	}
-	context.JSON(http.StatusOK, cities)
+
 }

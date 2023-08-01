@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
@@ -13,11 +14,18 @@ func AddShows(context *gin.Context) {
 
 	if err := context.BindJSON(&showsRequest); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not parse city response",
+			"error": "could not parse show response",
 		})
+	} else {
+		shows, err := database.CreateShows(showsRequest)
+		if err != nil {
+			context.JSON(http.StatusConflict, gin.H{
+				"error": fmt.Sprintf("%s", err),
+			})
+		} else {
+			context.JSON(http.StatusOK, shows)
+		}
 	}
-	shows, _ := database.CreateShows(showsRequest)
-	context.JSON(http.StatusOK, shows)
 }
 
 func GetShows(context *gin.Context) {
@@ -26,6 +34,7 @@ func GetShows(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get cities",
 		})
+	} else {
+		context.JSON(http.StatusOK, shows)
 	}
-	context.JSON(http.StatusOK, shows)
 }

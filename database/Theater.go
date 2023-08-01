@@ -5,8 +5,7 @@ import (
 )
 
 func CreateTheaters(theaters []models.Theater) ([]models.Theater, error) {
-	db := DbInstance.GetDB()
-	if txn := db.Create(&theaters); txn.Error != nil {
+	if txn := DbInstance.db.Create(&theaters); txn.Error != nil {
 		return []models.Theater{}, txn.Error
 	}
 	return theaters, nil
@@ -14,8 +13,7 @@ func CreateTheaters(theaters []models.Theater) ([]models.Theater, error) {
 
 func ShowTheaters() ([]models.Theater, error) {
 	var theaters []models.Theater
-	db := DbInstance.GetDB()
-	if txn := db.Find(&theaters); txn.Error != nil {
+	if txn := DbInstance.db.Find(&theaters); txn.Error != nil {
 		return theaters, txn.Error
 	}
 	return theaters, nil

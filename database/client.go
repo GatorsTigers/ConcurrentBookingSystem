@@ -2,23 +2,25 @@ package database
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/config"
+	"github.com/GatorsTigers/ConcurrentBookingSystem/logger"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 	"gorm.io/driver/mysql" // Or any other database driver you are using
 	"gorm.io/gorm"
 )
 
-var DbInstance *DBInstance
+var (
+	DbInstance *DatabaseInstance
+	once       sync.Once
+)
 
-// DBInstance represents the singleton database instance.
-type DBInstance struct {
+type DatabaseInstance struct {
 	db *gorm.DB
 }
 
-func NewDatabaseClient(config *config.Config) (*DBInstance, error) {
-	var database *gorm.DB
-	var err error
+func NewDatabaseClient(config *config.Config) *DatabaseInstance {
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		config.DB.User,
 		config.DB.Password,
@@ -27,44 +29,39 @@ func NewDatabaseClient(config *config.Config) (*DBInstance, error) {
 		config.DB.Dbname,
 	)
 
-	database, err = gorm.Open(mysql.Open(dbURI), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open(dbURI), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		logger.Fatal("Could not connect to the database")
+		return nil
 	}
 
-	fmt.Println("Connected to db")
-	client := &DBInstance{
+	logger.Info(fmt.Sprintf("Connected to the database %s", config.DB.Dbname))
+	dbInstance := &DatabaseInstance{
 		db: database,
 	}
-	return client, nil
+	return dbInstance
 }
 
 func InitDB(config *config.Config) {
-	instance, err := NewDatabaseClient(config)
-	if err != nil {
-		panic(err)
-	}
-	DbInstance = instance
+	once.Do(func() {
+		instance := NewDatabaseClient(config)
+		DbInstance = instance
+	})
 }
 
-func (c *DBInstance) GetDB() *gorm.DB {
-	return c.db
-}
-
-func (c *DBInstance) Ready() bool {
+func (i *DatabaseInstance) Ready() bool {
 	var ready string
-	txn := c.db.Raw("SELECT 1 as ready").Scan(&ready)
+	txn := i.db.Raw("SELECT 1 as ready").Scan(&ready)
 	if txn.Error != nil {
 		return false
-	}
-	if ready == "1" {
+	} else if ready == "1" {
 		return true
 	}
 	return false
 }
 
-func CreateTables(db *gorm.DB) error {
-	err := db.AutoMigrate(
+func (i *DatabaseInstance) CreateTables() {
+	if err := i.db.AutoMigrate(
 		&models.City{},
 		&models.Show{},
 		&models.Theater{},
@@ -74,29 +71,7 @@ func CreateTables(db *gorm.DB) error {
 		&models.Seat{},
 		&models.ScreenShowSchedule{},
 		&models.Ticket{},
-	)
-
-	if err != nil {
-		return fmt.Errorf("failed to auto-migrate the table")
+	); err != nil {
+		logger.Fatal("Failed to create the tables")
 	}
-	return nil
-}
-
-func InsertDataIntoTables(db *gorm.DB) error {
-	user := &models.User{
-		EmailId: "jack@gmail.com",
-		PhoneNo: "9900000000",
-	}
-	city := &models.City{
-		CityName: "NewYork",
-	}
-	txn := db.Save(&user)
-	if txn.Error != nil {
-		return txn.Error
-	}
-	txn = db.Save(&city)
-	if txn.Error != nil {
-		return txn.Error
-	}
-	return nil
 }

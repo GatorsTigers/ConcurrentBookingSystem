@@ -6,17 +6,15 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/config"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/controller"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
+	"github.com/GatorsTigers/ConcurrentBookingSystem/logger"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	log.Printf("Successfullty Inserted")
+	logger.InitLogger()
 	config := config.GetConfig()
 	database.InitDB(config)
-	client := database.DbInstance.GetDB()
-	database.CreateTables(client)
-	// database.InsertDataIntoTables(client)
-	log.Printf("Successfullty Inserted")
+	database.DbInstance.CreateTables()
 	serveApplication()
 }
 

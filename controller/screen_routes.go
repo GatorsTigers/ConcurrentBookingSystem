@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
@@ -14,9 +15,18 @@ func AddScreens(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse screen response",
 		})
+	} else {
+		screens, err := database.CreateScreens(screenJson)
+		if err != nil {
+			context.JSON(http.StatusConflict, gin.H{
+				"error": fmt.Sprintf("%s", err),
+			})
+		} else {
+			context.JSON(http.StatusOK, screens)
+		}
+
 	}
-	screens, _ := database.CreateScreens(screenJson)
-	context.JSON(http.StatusOK, screens)
+
 }
 
 func ShowScreens(context *gin.Context) {
@@ -25,6 +35,8 @@ func ShowScreens(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get screens",
 		})
+	} else {
+		context.JSON(http.StatusOK, screens)
 	}
-	context.JSON(http.StatusOK, screens)
+
 }
