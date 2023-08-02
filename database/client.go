@@ -17,7 +17,7 @@ var (
 )
 
 type DatabaseInstance struct {
-	db *gorm.DB
+	Db *gorm.DB
 }
 
 func NewDatabaseClient(config *config.Config) *DatabaseInstance {
@@ -37,7 +37,7 @@ func NewDatabaseClient(config *config.Config) *DatabaseInstance {
 
 	logger.Info(fmt.Sprintf("Connected to the database %s", config.DB.Dbname))
 	dbInstance := &DatabaseInstance{
-		db: database,
+		Db: database,
 	}
 	return dbInstance
 }
@@ -51,7 +51,7 @@ func InitDB(config *config.Config) {
 
 func (i *DatabaseInstance) Ready() bool {
 	var ready string
-	txn := i.db.Raw("SELECT 1 as ready").Scan(&ready)
+	txn := i.Db.Raw("SELECT 1 as ready").Scan(&ready)
 	if txn.Error != nil {
 		return false
 	} else if ready == "1" {
@@ -61,7 +61,7 @@ func (i *DatabaseInstance) Ready() bool {
 }
 
 func (i *DatabaseInstance) CreateTables() {
-	if err := i.db.AutoMigrate(
+	if err := i.Db.AutoMigrate(
 		&models.City{},
 		&models.Show{},
 		&models.Theater{},
