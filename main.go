@@ -36,6 +36,11 @@ func serveApplication() {
 	show.POST("", controller.AddShows)
 	show.GET("", controller.GetShows)
 
+	auth := router.Group("/auth")
+	auth.POST("/register", controller.RegisterUser)
+	auth.POST("/login", controller.LoginUser)
+	auth.POST("/validate", controller.ValidateLogin([]gin.HandlerFunc{controller.LoginUser}))
+
 	router.Run(":8000")
 	log.Println("Server running on port 8000")
 }
