@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
@@ -9,11 +10,11 @@ import (
 )
 
 func CreateCities(context *gin.Context) {
-	var cityJson []*models.City
+	var cityJson []models.City
 	err := context.BindJSON(&cityJson)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not parse city response",
+			"error": fmt.Sprintf("could not parse city request %s", err),
 		})
 	} else {
 		cities, err := database.CreateCities(cityJson)

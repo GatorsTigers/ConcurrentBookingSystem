@@ -4,7 +4,7 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func CreateCities(cities []*models.City) ([]*models.City, error) {
+func CreateCities(cities []models.City) ([]models.City, error) {
 	if txn := DbInstance.Db.Create(&cities); txn.Error != nil {
 		return nil, txn.Error
 	}

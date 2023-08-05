@@ -31,7 +31,19 @@ func ShowTheaters(context *gin.Context) {
 	theaters, err := database.ShowTheaters()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not get cities",
+			"error": "could not get theatres",
+		})
+	} else {
+		context.JSON(http.StatusOK, theaters)
+	}
+}
+
+func GetTheatresByCity(context *gin.Context) {
+	cityName := context.Request.URL.Query().Get("cityName")
+	theaters, err := database.GetCityTheatres(cityName)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "could not get theatres for the city",
 		})
 	} else {
 		context.JSON(http.StatusOK, theaters)

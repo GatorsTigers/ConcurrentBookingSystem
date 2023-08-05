@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -30,16 +29,10 @@ type claims struct {
 	jwt.StandardClaims
 }
 
-// Adapter is an alias so I dont have to type so much.
-type Adapter func(http.Handler) http.Handler
-
 // LoginUser method to login user by generating JWT Token and setting cookie
 func LoginUser(context *gin.Context) {
 	var creds credentials
-	// Get the JSON body and decode into credentials
-	err := json.NewDecoder(context.Request.Body).Decode(&creds)
-	if err != nil {
-		// If the structure of the body is wrong, return an HTTP error
+	if err := context.BindJSON(&creds); err != nil {
 		context.JSON(http.StatusBadRequest, "Structure of the request body is invalid")
 		return
 	}
@@ -51,8 +44,8 @@ func LoginUser(context *gin.Context) {
 
 	if result {
 		// Declare the expiration time of the token
-		// here, we have kept it as 5 minutes
-		expirationTime := time.Now().Add(30 * time.Minute)
+		// here, we have kept it as 15 minutes
+		expirationTime := time.Now().Add(15 * time.Minute)
 		// Create the JWT claims, which includes the username and expiry time
 		claims := &claims{
 			EmailId: creds.Email,
@@ -82,7 +75,7 @@ func LoginUser(context *gin.Context) {
 }
 
 // ValidateLogin is the middleware.
-func ValidateLogin(next ...gin.HandlersChain) func(ctx *gin.Context) {
+func ValidateLogin(handlerFunc gin.HandlerFunc) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		// We can obtain the session token from the requests cookies, which come with every request
 		cookie, err := ctx.Cookie(jwtCookieKey)
@@ -119,12 +112,7 @@ func ValidateLogin(next ...gin.HandlersChain) func(ctx *gin.Context) {
 			ctx.JSON(http.StatusUnauthorized, "The token is not valid")
 			return
 		}
-		// ctx.Next()
-		if len(next) == 1 {
-			ctx.Next()
-		} else {
-			ctx.JSON(http.StatusOK, cookie)
-		}
+		handlerFunc(ctx)
 	}
 }
 
@@ -138,27 +126,22 @@ func getTokenBody(context *gin.Context) *claims {
 }
 
 // LogoutUser method logs out the user by deleting the cookie
-// func LogoutUser(context *gin.Context) {
-// 	claims := getTokenBody(context)
-// 	expirationTime := time.Now()
-// 	claims.ExpiresAt = expirationTime.Unix()
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-// 	tokenString, err := token.SignedString(jwtKey)
-// 	if err != nil {
-// 		context.JSON(http.StatusInternalServerError, "Some error occured while signing the token for 0 expiration time")
-// 		return
-// 	}
+func LogoutUser(context *gin.Context) {
+	claims := getTokenBody(context)
+	expirationTime := time.Now()
+	claims.ExpiresAt = expirationTime.Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, "Some error occured while signing the token for 0 expiration time")
+		return
+	}
 
-// 	// Set the new token as the users `token` cookie
-// 	http.SetCookie(w, &http.Cookie{
-// 		Name:    "referralboard-jwt-token",
-// 		Value:   tokenString,
-// 		Expires: expirationTime,
-// 	})
-// 	services.RespondJSON(w, http.StatusOK, "Logged out the user")
-// }
+	// Set the new token as the users `token` cookie
+	context.SetCookie(jwtCookieKey, tokenString, expirationTime.Second(), "/", "localhost", false, true)
+	context.JSON(http.StatusOK, "Logged out the user")
+}
 
-// GetUserByID wraps the GET  User by Id method
 func GetUserByEmailID(context *gin.Context) {
 	claims := getTokenBody(context)
 	user, er := database.GetUserByEmailID(claims.EmailId)
@@ -169,14 +152,13 @@ func GetUserByEmailID(context *gin.Context) {
 	}
 }
 
-// AddUser wraps the POST User method
 func RegisterUser(context *gin.Context) {
-	var user *models.User
+	var user models.User
 	var err error
 
-	if err = context.BindJSON(&user); err != nil {
+	if err = context.BindJSON(user); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not parse screen response",
+			"error": "could not parse user response",
 		})
 		return
 	}
@@ -186,11 +168,11 @@ func RegisterUser(context *gin.Context) {
 	} else {
 		// Extract company domain from email
 		// Add user
-		newUser, err := database.AddUser(user)
+		user_success, err := database.AddUser(&user)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, err.Error())
 		} else {
-			context.JSON(http.StatusOK, newUser)
+			context.JSON(http.StatusOK, user_success)
 		}
 	}
 }
