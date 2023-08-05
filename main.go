@@ -21,21 +21,24 @@ func main() {
 func serveApplication() {
 	router := gin.Default()
 	cityGroup := router.Group("/city")
-	cityGroup.POST("", controller.ValidateLogin(controller.CreateCities))
-	cityGroup.GET("", controller.ValidateLogin(controller.ShowCities))
+	cityGroup.POST("", controller.CreateCities)
+	cityGroup.GET("", controller.ShowCities)
 
 	theater := router.Group("/theater")
 	theater.POST("", controller.AddTheaters)
-	theater.GET("", controller.ValidateLogin(controller.ShowTheaters))
+	theater.GET("", controller.ShowTheaters)
 	theater.GET("/city", controller.GetTheatresByCity)
+	theater.POST("/addShow", controller.AddShowsInTheatre)
+	theater.POST("/show/schedule", controller.AddScreenShowScheduleInTheatre)
+	theater.GET("/getShow", controller.GetShowsForTheatre)
 
 	screen := router.Group("/screen")
-	screen.POST("", controller.ValidateLogin(controller.AddScreens))
-	screen.GET("", controller.ValidateLogin(controller.ShowScreens))
+	screen.POST("", controller.AddScreens)
+	screen.GET("", controller.ShowScreens)
 
 	show := router.Group("/show")
-	show.POST("", controller.ValidateLogin(controller.AddShows))
-	show.GET("", controller.ValidateLogin(controller.GetShows))
+	show.POST("", controller.AddShows)
+	show.GET("", controller.GetShows)
 
 	auth := router.Group("/auth")
 	auth.POST("/register", controller.RegisterUser)

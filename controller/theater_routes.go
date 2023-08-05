@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
@@ -47,5 +48,49 @@ func GetTheatresByCity(context *gin.Context) {
 		})
 	} else {
 		context.JSON(http.StatusOK, theaters)
+	}
+}
+
+func AddShowsInTheatre(context *gin.Context) {
+	var theaterShows []models.TheaterShow
+	if err := context.BindJSON(&theaterShows); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "could not parse theater response",
+		})
+	} else {
+		isInserted, err := database.CreateShowTheaterBridge(theaterShows)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{
+				"error": "could not add shows in theater",
+			})
+		} else {
+			context.JSON(http.StatusOK, isInserted)
+		}
+	}
+
+}
+
+func AddScreenShowScheduleInTheatre(context *gin.Context) {
+	var screenShowSchedules []models.ScreenShowSchedule
+	screenShowSchedules, err := database.AddScreenShowScheduleInTheatre(screenShowSchedules)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "could not add shows in theater",
+		})
+	} else {
+		context.JSON(http.StatusOK, screenShowSchedules)
+	}
+}
+
+func GetShowsForTheatre(context *gin.Context) {
+	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
+	theaterReferId := uint32(theaterId)
+	screenShowSchedules, err := database.GetShowScheduleForTheatre(theaterReferId)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "could not add shows in theater",
+		})
+	} else {
+		context.JSON(http.StatusOK, screenShowSchedules)
 	}
 }
