@@ -4,11 +4,11 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func CreateScreens(screens []models.Screen) ([]models.Screen, error) {
+func CreateScreens(screens *[]models.Screen) error {
 	if txn := DbInstance.Db.Create(&screens); txn.Error != nil {
-		return []models.Screen{}, txn.Error
+		return txn.Error
 	}
-	return screens, nil
+	return nil
 }
 
 func ShowScreens() ([]models.Screen, error) {

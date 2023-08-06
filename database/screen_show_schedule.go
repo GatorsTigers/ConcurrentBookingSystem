@@ -6,11 +6,11 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func AddScreenShowScheduleInTheatre(screenShowSchedules []models.ScreenShowSchedule) ([]models.ScreenShowSchedule, error) {
-	if txn := DbInstance.Db.Create(&screenShowSchedules); txn.Error != nil {
-		return screenShowSchedules, txn.Error
+func AddScreenShowScheduleInTheatre(screenShowSchedules *[]models.ScreenShowSchedule) error {
+	if txn := DbInstance.Db.Create(screenShowSchedules); txn.Error != nil {
+		return txn.Error
 	}
-	return screenShowSchedules, nil
+	return nil
 }
 
 func GetShowScheduleForTheatre(theaterId uint32) ([]models.ScreenShowSchedule, error) {

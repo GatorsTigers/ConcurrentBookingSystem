@@ -6,29 +6,29 @@ import (
 )
 
 // AddUser creates a user
-func AddUser(user *models.User) (*models.User, error) {
+func AddUser(user *models.User) error {
 
 	password := []byte(user.Password)
 
 	// Hashing the password with the default cost of 10
-	hashedPassword, er := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-	if er != nil {
-		return nil, er
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		return err
 	}
 
 	user.Password = string(hashedPassword)
 
-	err := DbInstance.Db.Create(&user).Error
+	err = DbInstance.Db.Create(&user).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return GetUserByEmailID(user.EmailId)
+	return nil
 }
 
-func GetUserByEmailID(email string) (*models.User, error) {
-	var user *models.User
+func GetUserByEmailID(email string) (models.User, error) {
+	var user models.User
 	if txn := DbInstance.Db.Find(&user); txn.Error != nil {
-		return nil, txn.Error
+		return user, txn.Error
 	}
 	return user, nil
 }

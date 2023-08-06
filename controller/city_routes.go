@@ -17,7 +17,7 @@ func CreateCities(context *gin.Context) {
 			"error": fmt.Sprintf("could not parse city request %s", err),
 		})
 	} else {
-		cities, err := database.CreateCities(cityJson)
+		cities, err := database.CreateCities(&cityJson)
 		if err != nil {
 			context.JSON(http.StatusConflict, gin.H{
 				"error": "this city already exists",

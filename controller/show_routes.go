@@ -17,13 +17,13 @@ func AddShows(context *gin.Context) {
 			"error": "could not parse show response",
 		})
 	} else {
-		shows, err := database.CreateShows(showsRequest)
+		err := database.CreateShows(&showsRequest)
 		if err != nil {
 			context.JSON(http.StatusConflict, gin.H{
 				"error": fmt.Sprintf("%s", err),
 			})
 		} else {
-			context.JSON(http.StatusOK, shows)
+			context.JSON(http.StatusOK, showsRequest)
 		}
 	}
 }

@@ -17,13 +17,13 @@ func AddTheaters(context *gin.Context) {
 			"error": "could not parse theater response",
 		})
 	} else {
-		theaterResult, err := database.CreateTheaters(theaters)
+		err := database.CreateTheaters(&theaters)
 		if err != nil {
 			context.JSON(http.StatusConflict, gin.H{
 				"error": fmt.Sprintf("%s", err),
 			})
 		} else {
-			context.JSON(http.StatusOK, theaterResult)
+			context.JSON(http.StatusOK, theaters)
 		}
 	}
 }
@@ -41,7 +41,8 @@ func ShowTheaters(context *gin.Context) {
 
 func GetTheatresByCity(context *gin.Context) {
 	cityName := context.Request.URL.Query().Get("cityName")
-	theaters, err := database.GetCityTheatres(cityName)
+	var theaters []models.Theater
+	err := database.GetCityTheatres(cityName, &theaters)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get theatres for the city",
@@ -58,7 +59,7 @@ func AddShowsInTheatre(context *gin.Context) {
 			"error": "could not parse theater response",
 		})
 	} else {
-		isInserted, err := database.CreateShowTheaterBridge(theaterShows)
+		isInserted, err := database.CreateShowTheaterBridge(&theaterShows)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not add shows in theater",
@@ -72,7 +73,7 @@ func AddShowsInTheatre(context *gin.Context) {
 
 func AddScreenShowScheduleInTheatre(context *gin.Context) {
 	var screenShowSchedules []models.ScreenShowSchedule
-	screenShowSchedules, err := database.AddScreenShowScheduleInTheatre(screenShowSchedules)
+	err := database.AddScreenShowScheduleInTheatre(&screenShowSchedules)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not add shows in theater",

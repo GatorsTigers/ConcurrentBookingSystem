@@ -142,16 +142,6 @@ func LogoutUser(context *gin.Context) {
 	context.JSON(http.StatusOK, "Logged out the user")
 }
 
-func GetUserByEmailID(context *gin.Context) {
-	claims := getTokenBody(context)
-	user, er := database.GetUserByEmailID(claims.EmailId)
-	if er != nil {
-		context.JSON(http.StatusBadRequest, "Error occured while trying to fetch user")
-	} else {
-		context.JSON(http.StatusOK, user)
-	}
-}
-
 func RegisterUser(context *gin.Context) {
 	var user models.User
 	var err error
@@ -168,11 +158,11 @@ func RegisterUser(context *gin.Context) {
 	} else {
 		// Extract company domain from email
 		// Add user
-		user_success, err := database.AddUser(&user)
+		err := database.AddUser(&user)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, err.Error())
 		} else {
-			context.JSON(http.StatusOK, user_success)
+			context.JSON(http.StatusOK, user)
 		}
 	}
 }

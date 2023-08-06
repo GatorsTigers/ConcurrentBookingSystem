@@ -16,15 +16,14 @@ func AddScreens(context *gin.Context) {
 			"error": "could not parse screen response",
 		})
 	} else {
-		screens, err := database.CreateScreens(screenJson)
+		err := database.CreateScreens(&screenJson)
 		if err != nil {
 			context.JSON(http.StatusConflict, gin.H{
 				"error": fmt.Sprintf("%s", err),
 			})
 		} else {
-			context.JSON(http.StatusOK, screens)
+			context.JSON(http.StatusOK, screenJson)
 		}
-
 	}
 
 }

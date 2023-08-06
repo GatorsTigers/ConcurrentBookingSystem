@@ -4,11 +4,11 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func CreateTheaters(theaters []models.Theater) ([]models.Theater, error) {
+func CreateTheaters(theaters *[]models.Theater) error {
 	if txn := DbInstance.Db.Create(&theaters); txn.Error != nil {
-		return []models.Theater{}, txn.Error
+		return txn.Error
 	}
-	return theaters, nil
+	return nil
 }
 
 func ShowTheaters() ([]models.Theater, error) {
@@ -19,10 +19,9 @@ func ShowTheaters() ([]models.Theater, error) {
 	return theaters, nil
 }
 
-func GetCityTheatres(cityName string) ([]models.Theater, error) {
-	var theaters []models.Theater
-	if txn := DbInstance.Db.Where("city_refer_name = ?", cityName).Find(&theaters); txn.Error != nil {
-		return theaters, txn.Error
+func GetCityTheatres(cityName string, theaters *[]models.Theater) error {
+	if txn := DbInstance.Db.Where("city_refer_name = ?", cityName).Find(theaters); txn.Error != nil {
+		return txn.Error
 	}
-	return theaters, nil
+	return nil
 }

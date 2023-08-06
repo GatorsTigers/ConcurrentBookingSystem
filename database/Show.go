@@ -4,11 +4,11 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func CreateShows(shows []models.Show) ([]models.Show, error) {
+func CreateShows(shows *[]models.Show) error {
 	if txn := DbInstance.Db.Create(&shows); txn.Error != nil {
-		return []models.Show{}, txn.Error
+		return txn.Error
 	}
-	return shows, nil
+	return nil
 }
 
 func GetShows() ([]models.Show, error) {
