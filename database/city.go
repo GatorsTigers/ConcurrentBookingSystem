@@ -5,7 +5,7 @@ import (
 )
 
 func CreateCities(cities *[]models.City) (*[]models.City, error) {
-	if txn := DbInstance.Db.Create(&cities); txn.Error != nil {
+	if txn := DbInstance.Db.Create(cities); txn.Error != nil {
 		return nil, txn.Error
 	}
 	return cities, nil

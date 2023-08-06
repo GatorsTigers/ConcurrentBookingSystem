@@ -5,7 +5,7 @@ import (
 )
 
 func CreateTheaters(theaters *[]models.Theater) error {
-	if txn := DbInstance.Db.Create(&theaters); txn.Error != nil {
+	if txn := DbInstance.Db.Create(theaters); txn.Error != nil {
 		return txn.Error
 	}
 	return nil

@@ -5,7 +5,7 @@ import (
 )
 
 func CreateShows(shows *[]models.Show) error {
-	if txn := DbInstance.Db.Create(&shows); txn.Error != nil {
+	if txn := DbInstance.Db.Create(shows); txn.Error != nil {
 		return txn.Error
 	}
 	return nil
