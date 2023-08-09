@@ -73,14 +73,19 @@ func AddShowsInTheatre(context *gin.Context) {
 
 func AddScreenShowScheduleInTheatre(context *gin.Context) {
 	var screenShowSchedules []models.ScreenShowSchedule
-	err := database.AddScreenShowScheduleInTheatre(&screenShowSchedules)
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not add shows in theater",
-		})
+	if err := context.BindJSON(&screenShowSchedules); err != nil {
+		context.JSON(http.StatusBadRequest, "Couldn't parse screen show schedule request")
 	} else {
-		context.JSON(http.StatusOK, screenShowSchedules)
+		err := database.AddScreenShowScheduleInTheatre(&screenShowSchedules)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{
+				"error": "could not add shows in theater",
+			})
+		} else {
+			context.JSON(http.StatusOK, screenShowSchedules)
+		}
 	}
+
 }
 
 func GetShowsForTheatre(context *gin.Context) {
@@ -89,7 +94,7 @@ func GetShowsForTheatre(context *gin.Context) {
 	screenShowSchedules, err := database.GetShowScheduleForTheatre(theaterReferId)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not add shows in theater",
+			"error": "could not get shows in theater",
 		})
 	} else {
 		context.JSON(http.StatusOK, screenShowSchedules)

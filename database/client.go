@@ -21,7 +21,7 @@ type DatabaseInstance struct {
 }
 
 func NewDatabaseClient(config *config.Config) *DatabaseInstance {
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		config.DB.User,
 		config.DB.Password,
 		config.DB.Host,

@@ -16,7 +16,7 @@ func AddScreenShowScheduleInTheatre(screenShowSchedules *[]models.ScreenShowSche
 func GetShowScheduleForTheatre(theaterId uint32) ([]models.ScreenShowSchedule, error) {
 	var screenShowSchedules []models.ScreenShowSchedule
 	cur_ts := time.Now()
-	if txn := DbInstance.Db.Where("start_time>=? and theater_comp_refer_id= ?", cur_ts, theaterId).Find(&screenShowSchedules); txn.Error != nil {
+	if txn := DbInstance.Db.Model(&models.ScreenShowSchedule{}).Joins("Screen").Joins("Show").Where("start_time>=? and theater_comp_refer_id= ?", cur_ts, theaterId).Find(&screenShowSchedules); txn.Error != nil {
 		return screenShowSchedules, txn.Error
 	}
 	return screenShowSchedules, nil
