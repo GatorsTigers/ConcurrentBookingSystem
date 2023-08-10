@@ -1,7 +1,7 @@
 package models
 
 type Seat struct {
-	SeatId              uint32 `json:"seatId" gorm:"primary_key;"`
+	SeatId              uint32 `json:"seatId" gorm:"primary_key;type:autoIncrement"`
 	SeatName            string `json:"seatName"`
 	ScreenCompReferName string `json:"screenName" gorm:"not null"`
 	TheaterCompReferId  uint32 `json:"theaterId" gorm:"not null"`

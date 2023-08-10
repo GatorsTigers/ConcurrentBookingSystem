@@ -100,3 +100,23 @@ func GetShowsForTheatre(context *gin.Context) {
 		context.JSON(http.StatusOK, screenShowSchedules)
 	}
 }
+
+func GetSeatsForTheater(context *gin.Context) {
+	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
+	theaterReferId := uint32(theaterId)
+	screenSeats, err := database.GetSeats(int(theaterReferId))
+	screenSeatMapping := make(map[string][]models.Seat)
+	for _, element := range screenSeats {
+		screenSeatMapping[element.ScreenCompReferName] = append(screenSeatMapping[element.ScreenCompReferName], models.Seat{
+			SeatId:   element.SeatId,
+			SeatName: element.SeatName,
+		})
+	}
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "could not get seats",
+		})
+	} else {
+		context.JSON(http.StatusOK, screenSeatMapping)
+	}
+}
