@@ -49,6 +49,10 @@ func serveApplication() {
 	auth.POST("/login", controller.LoginUser)
 	auth.POST("/logout", controller.LogoutUser)
 
+	ticket := router.Group("/ticket")
+	ticket.POST("", controller.BookTicket)
+	ticket.GET("", controller.GetUserTickets)
+
 	router.Run(":8000")
 	log.Println("Server running on port 8000")
 }

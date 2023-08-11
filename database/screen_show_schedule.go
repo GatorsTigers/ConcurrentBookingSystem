@@ -13,11 +13,10 @@ func AddScreenShowScheduleInTheatre(screenShowSchedules *[]models.ScreenShowSche
 	return nil
 }
 
-func GetShowScheduleForTheatre(theaterId uint32) ([]models.ScreenShowSchedule, error) {
-	var screenShowSchedules []models.ScreenShowSchedule
+func GetShowScheduleForTheatre(theaterId uint32, screenShowSchedules *[]models.ScreenShowSchedule) error {
 	cur_ts := time.Now()
-	if txn := DbInstance.Db.Model(&models.ScreenShowSchedule{}).Joins("Screen").Joins("Show").Where("start_time>=? and theater_comp_refer_id= ?", cur_ts, theaterId).Find(&screenShowSchedules); txn.Error != nil {
-		return screenShowSchedules, txn.Error
+	if txn := DbInstance.Db.Model(&models.ScreenShowSchedule{}).Joins("Screen").Joins("Show").Where("start_time>=? and theater_comp_refer_id= ?", cur_ts, theaterId).Find(screenShowSchedules); txn.Error != nil {
+		return txn.Error
 	}
-	return screenShowSchedules, nil
+	return nil
 }

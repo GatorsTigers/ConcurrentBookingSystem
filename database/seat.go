@@ -10,10 +10,9 @@ func CreateSeats(seats []*models.Seat) error {
 	return nil
 }
 
-func GetSeats(theaterId int) ([]models.Seat, error) {
-	var seats []models.Seat
-	if txn := DbInstance.Db.Find(&seats).Where("theater_comp_refer_id= ?", theaterId).Find(&seats); txn.Error != nil {
-		return seats, txn.Error
+func GetSeats(theaterId int, screenSeats *[]models.Seat) error {
+	if txn := DbInstance.Db.Where("theater_comp_refer_id = ?", theaterId).Find(screenSeats); txn.Error != nil {
+		return txn.Error
 	}
-	return seats, nil
+	return nil
 }

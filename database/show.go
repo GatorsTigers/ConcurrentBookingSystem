@@ -11,10 +11,9 @@ func CreateShows(shows *[]models.Show) error {
 	return nil
 }
 
-func GetShows() ([]models.Show, error) {
-	var shows []models.Show
-	if txn := DbInstance.Db.Find(&shows); txn.Error != nil {
-		return shows, txn.Error
+func GetShows(shows *[]models.Show) error {
+	if txn := DbInstance.Db.Find(shows); txn.Error != nil {
+		return txn.Error
 	}
-	return shows, nil
+	return nil
 }

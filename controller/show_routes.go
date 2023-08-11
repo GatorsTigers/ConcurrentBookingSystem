@@ -29,7 +29,8 @@ func AddShows(context *gin.Context) {
 }
 
 func GetShows(context *gin.Context) {
-	shows, err := database.GetShows()
+	var shows []models.Show
+	err := database.GetShows(&shows)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get cities",

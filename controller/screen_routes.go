@@ -29,7 +29,8 @@ func AddScreens(context *gin.Context) {
 }
 
 func ShowScreens(context *gin.Context) {
-	screens, err := database.ShowScreens()
+	var screens []models.Screen
+	err := database.ShowScreens(&screens)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get screens",

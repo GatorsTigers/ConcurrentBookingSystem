@@ -146,7 +146,7 @@ func RegisterUser(context *gin.Context) {
 	var user models.User
 	var err error
 
-	if err = context.BindJSON(user); err != nil {
+	if err = context.BindJSON(&user); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse user response",
 		})
@@ -162,7 +162,7 @@ func RegisterUser(context *gin.Context) {
 		if err != nil {
 			context.JSON(http.StatusBadRequest, err.Error())
 		} else {
-			context.JSON(http.StatusOK, user)
+			context.JSON(http.StatusOK, "Registration Successfull")
 		}
 	}
 }

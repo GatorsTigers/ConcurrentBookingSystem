@@ -29,7 +29,8 @@ func AddTheaters(context *gin.Context) {
 }
 
 func ShowTheaters(context *gin.Context) {
-	theaters, err := database.ShowTheaters()
+	var theaters []models.Theater
+	err := database.ShowTheaters(&theaters)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get theatres",
@@ -91,7 +92,8 @@ func AddScreenShowScheduleInTheatre(context *gin.Context) {
 func GetShowsForTheatre(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
-	screenShowSchedules, err := database.GetShowScheduleForTheatre(theaterReferId)
+	var screenShowSchedules []models.ScreenShowSchedule
+	err := database.GetShowScheduleForTheatre(theaterReferId, &screenShowSchedules)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get shows in theater",
@@ -104,7 +106,11 @@ func GetShowsForTheatre(context *gin.Context) {
 func GetSeatsForTheater(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
-	screenSeats, err := database.GetSeats(int(theaterReferId))
+	var screenSeats []models.Seat
+	if err := database.GetSeats(int(theaterReferId), &screenSeats); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not get seats for theater %s", err))
+	}
+
 	screenSeatMapping := make(map[string][]models.Seat)
 	for _, element := range screenSeats {
 		screenSeatMapping[element.ScreenCompReferName] = append(screenSeatMapping[element.ScreenCompReferName], models.Seat{
@@ -112,11 +118,5 @@ func GetSeatsForTheater(context *gin.Context) {
 			SeatName: element.SeatName,
 		})
 	}
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not get seats",
-		})
-	} else {
-		context.JSON(http.StatusOK, screenSeatMapping)
-	}
+	context.JSON(http.StatusOK, screenSeatMapping)
 }
