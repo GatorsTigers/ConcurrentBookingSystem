@@ -53,14 +53,14 @@ func GetTheatresByCity(context *gin.Context) {
 	}
 }
 
-func AddShowsInTheatre(context *gin.Context) {
-	var theaterShows []models.TheaterShow
+func AddMoviesInTheatre(context *gin.Context) {
+	var theaterShows []models.TheaterMovie
 	if err := context.BindJSON(&theaterShows); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse theater response",
 		})
 	} else {
-		isInserted, err := database.CreateShowTheaterBridge(&theaterShows)
+		isInserted, err := database.CreateMovieTheaterBridge(&theaterShows)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not add shows in theater",
@@ -73,17 +73,17 @@ func AddShowsInTheatre(context *gin.Context) {
 }
 
 func AddScreenShowScheduleInTheatre(context *gin.Context) {
-	var screenShowSchedules []models.ScreenShowSchedule
-	if err := context.BindJSON(&screenShowSchedules); err != nil {
+	var screenMovieSchedules []models.ScreenShowSchedule
+	if err := context.BindJSON(&screenMovieSchedules); err != nil {
 		context.JSON(http.StatusBadRequest, "Couldn't parse screen show schedule request")
 	} else {
-		err := database.AddScreenShowScheduleInTheatre(&screenShowSchedules)
+		err := database.AddScreenShowScheduleInTheatre(&screenMovieSchedules)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not add shows in theater",
 			})
 		} else {
-			context.JSON(http.StatusOK, screenShowSchedules)
+			context.JSON(http.StatusOK, screenMovieSchedules)
 		}
 	}
 
@@ -92,14 +92,14 @@ func AddScreenShowScheduleInTheatre(context *gin.Context) {
 func GetShowsForTheatre(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
-	var screenShowSchedules []models.ScreenShowSchedule
-	err := database.GetShowScheduleForTheatre(theaterReferId, &screenShowSchedules)
+	var screenMovieSchedules []models.ScreenShowSchedule
+	err := database.GetShowScheduleForTheatre(theaterReferId, &screenMovieSchedules)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get shows in theater",
 		})
 	} else {
-		context.JSON(http.StatusOK, screenShowSchedules)
+		context.JSON(http.StatusOK, screenMovieSchedules)
 	}
 }
 

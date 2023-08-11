@@ -1,7 +1,8 @@
 package models
 
 type Screen struct {
-	ScreenName     string  `json:"screenName" gorm:"primary_key;size:100"`
-	TheaterReferId uint32  `json:"theaterId" gorm:"primary_key;autoIncrement:false"`
+	ScreenId       uint32  `json:"screenId" gorm:"primary_key;"`
+	ScreenName     string  `json:"screenName" gorm:"size:100;"`
+	TheaterReferId uint32  `json:"theaterId"`
 	Theater        Theater `json:"-" gorm:"foreignKey:TheaterReferId;References:TheaterId"`
 }

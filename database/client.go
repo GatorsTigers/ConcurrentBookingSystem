@@ -63,10 +63,10 @@ func (i *DatabaseInstance) Ready() bool {
 func (i *DatabaseInstance) CreateTables() {
 	if err := i.Db.AutoMigrate(
 		&models.City{},
-		&models.Show{},
+		&models.Movie{},
 		&models.Theater{},
 		&models.User{},
-		&models.TheaterShow{},
+		&models.TheaterMovie{},
 		&models.Screen{},
 		&models.Seat{},
 		&models.ScreenShowSchedule{},

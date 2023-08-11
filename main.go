@@ -28,7 +28,7 @@ func serveApplication() {
 	theater.POST("", controller.AddTheaters)
 	theater.GET("", controller.ShowTheaters)
 	theater.GET("/city", controller.GetTheatresByCity)
-	theater.POST("/addShow", controller.AddShowsInTheatre)
+	theater.POST("/addShow", controller.AddMoviesInTheatre)
 	theater.POST("/show/schedule", controller.AddScreenShowScheduleInTheatre)
 	theater.GET("/getShow", controller.GetShowsForTheatre)
 	theater.GET("/getSeats", controller.GetSeatsForTheater)
@@ -38,7 +38,7 @@ func serveApplication() {
 	screen.GET("", controller.ShowScreens)
 
 	show := router.Group("/show")
-	show.POST("", controller.AddShows)
+	show.POST("", controller.AddMovies)
 	show.GET("", controller.GetShows)
 
 	seats := router.Group("/seat")
