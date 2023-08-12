@@ -66,10 +66,10 @@ func (i *DatabaseInstance) CreateTables() {
 		&models.Movie{},
 		&models.Theater{},
 		&models.User{},
-		&models.TheaterMovie{},
 		&models.Screen{},
 		&models.Seat{},
 		&models.Show{},
+		&models.ShowSeat{},
 		&models.Ticket{},
 	); err != nil {
 		logger.Fatal("Failed to create the tables")
