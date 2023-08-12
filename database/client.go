@@ -69,7 +69,7 @@ func (i *DatabaseInstance) CreateTables() {
 		&models.TheaterMovie{},
 		&models.Screen{},
 		&models.Seat{},
-		&models.ScreenShowSchedule{},
+		&models.Show{},
 		&models.Ticket{},
 	); err != nil {
 		logger.Fatal("Failed to create the tables")

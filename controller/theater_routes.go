@@ -73,7 +73,7 @@ func AddMoviesInTheatre(context *gin.Context) {
 }
 
 func AddScreenShowScheduleInTheatre(context *gin.Context) {
-	var screenMovieSchedules []models.ScreenShowSchedule
+	var screenMovieSchedules []models.Show
 	if err := context.BindJSON(&screenMovieSchedules); err != nil {
 		context.JSON(http.StatusBadRequest, "Couldn't parse screen show schedule request")
 	} else {
@@ -92,7 +92,7 @@ func AddScreenShowScheduleInTheatre(context *gin.Context) {
 func GetShowsForTheatre(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
-	var screenMovieSchedules []models.ScreenShowSchedule
+	var screenMovieSchedules []models.Show
 	err := database.GetShowScheduleForTheatre(theaterReferId, &screenMovieSchedules)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
@@ -113,7 +113,7 @@ func GetSeatsForTheater(context *gin.Context) {
 
 	screenSeatMapping := make(map[string][]models.Seat)
 	for _, element := range screenSeats {
-		screenSeatMapping[element.ScreenCompReferName] = append(screenSeatMapping[element.ScreenCompReferName], models.Seat{
+		screenSeatMapping[element.ScreenCompReferId] = append(screenSeatMapping[element.ScreenCompReferId], models.Seat{
 			SeatId:   element.SeatId,
 			SeatName: element.SeatName,
 		})

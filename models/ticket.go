@@ -10,8 +10,8 @@ type Ticket struct {
 	ScreenCompSchReferName string    `json:"screenName" gorm:"primaryKey;index;not null"`
 	TheaterCompSchReferId  uint32    `json:"theaterId" gorm:"primaryKey;index;not null"`
 
-	Seat               Seat               `json:"-"  gorm:"foreignKey:SeatReferId;References:SeatId"`
-	User               User               `json:"-" gorm:"foreignKey:EmailReferId;References:EmailId"`
-	Movie              Movie              `json:"-" gorm:"foreignKey:MovieReferId;References:MovieId"`
-	ScreenShowSchedule ScreenShowSchedule `json:"-"  gorm:"ForeignKey:StartTimeRefer,ScreenCompSchReferName,TheaterCompSchReferId;References:StartTime,ScreenCompReferName,TheaterCompReferId"`
+	Seat  Seat  `json:"-"  gorm:"foreignKey:SeatReferId;References:SeatId"`
+	User  User  `json:"-" gorm:"foreignKey:EmailReferId;References:EmailId"`
+	Movie Movie `json:"-" gorm:"foreignKey:MovieReferId;References:MovieId"`
+	Show  Show  `json:"-"  gorm:"ForeignKey:StartTimeRefer,ScreenCompSchReferName,TheaterCompSchReferId;References:StartTime,ScreenCompReferName,TheaterCompReferId"`
 }
