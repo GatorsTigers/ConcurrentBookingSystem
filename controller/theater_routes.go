@@ -110,7 +110,7 @@ func GetSeatsForTheater(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
 	var screenSeats []models.Seat
-	if err := database.GetSeats(int(theaterReferId), &screenSeats); err != nil {
+	if err := database.GetAllSeatsInTheater(int(theaterReferId), &screenSeats); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not get seats for theater %s", err))
 	}
 
