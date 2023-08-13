@@ -1,7 +1,7 @@
 package models
 
 type ShowSeat struct {
-	ShowSeatId    uint32 `json:"showSeatId" gorm:"primary_key"`
+	ShowSeatId    uint32 `json:"showSeatId" gorm:"primaryKey"`
 	Status        string `json:"status"`
 	SeatReferId   uint32 `json:"seatId" gorm:"not null"`
 	ShowId        uint32 `json:"showId"`

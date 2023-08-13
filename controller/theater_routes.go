@@ -13,13 +13,13 @@ import (
 func AddTheaters(context *gin.Context) {
 	var theaters []models.Theater
 	if err := context.BindJSON(&theaters); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not parse theater response",
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "could not parse theater request",
 		})
 	} else {
 		err := database.CreateTheaters(&theaters)
 		if err != nil {
-			context.JSON(http.StatusConflict, gin.H{
+			context.AbortWithStatusJSON(http.StatusConflict, gin.H{
 				"error": fmt.Sprintf("%s", err),
 			})
 		} else {
@@ -41,9 +41,10 @@ func ShowTheaters(context *gin.Context) {
 }
 
 func GetTheatresByCity(context *gin.Context) {
-	cityName := context.Request.URL.Query().Get("cityName")
+	id, _ := strconv.ParseInt(context.Request.URL.Query().Get("cityId"), 10, 32)
+	cityId := uint32(id)
 	var theaters []models.Theater
-	err := database.GetCityTheatres(cityName, &theaters)
+	err := database.GetCityTheatres(cityId, &theaters)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get theatres for the city",
