@@ -28,7 +28,7 @@ func AddMovies(context *gin.Context) {
 	}
 }
 
-func GetShows(context *gin.Context) {
+func GetMovies(context *gin.Context) {
 	var movies []models.Movie
 	err := database.GetMovies(&movies)
 	if err != nil {

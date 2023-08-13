@@ -54,6 +54,7 @@ func GetTheatresByCity(context *gin.Context) {
 	}
 }
 
+/*
 func AddMoviesInTheatre(context *gin.Context) {
 	var theaterShows []models.TheaterMovie
 	if err := context.BindJSON(&theaterShows); err != nil {
@@ -71,20 +72,21 @@ func AddMoviesInTheatre(context *gin.Context) {
 		}
 	}
 
-}
+}*/
 
-func AddScreenShowScheduleInTheatre(context *gin.Context) {
-	var screenMovieSchedules []models.Show
-	if err := context.BindJSON(&screenMovieSchedules); err != nil {
+func AddShowsInTheatre(context *gin.Context) {
+	var shows []models.Show
+	if err := context.BindJSON(&shows); err != nil {
 		context.JSON(http.StatusBadRequest, "Couldn't parse screen show schedule request")
 	} else {
-		err := database.AddScreenShowScheduleInTheatre(&screenMovieSchedules)
+		err := database.AddShowsInTheatre(&shows)
+		//TODO: Add Show_seat
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not add shows in theater",
 			})
 		} else {
-			context.JSON(http.StatusOK, screenMovieSchedules)
+			context.JSON(http.StatusOK, shows)
 		}
 	}
 
@@ -93,14 +95,14 @@ func AddScreenShowScheduleInTheatre(context *gin.Context) {
 func GetShowsForTheatre(context *gin.Context) {
 	theaterId, _ := strconv.ParseInt(context.Request.URL.Query().Get("theaterId"), 10, 32)
 	theaterReferId := uint32(theaterId)
-	var screenMovieSchedules []models.Show
-	err := database.GetShowScheduleForTheatre(theaterReferId, &screenMovieSchedules)
+	var showSeats []models.ShowSeat
+	err := database.GetShowsForTheatre(theaterReferId, &showSeats)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get shows in theater",
 		})
 	} else {
-		context.JSON(http.StatusOK, screenMovieSchedules)
+		context.JSON(http.StatusOK, showSeats)
 	}
 }
 
@@ -114,7 +116,7 @@ func GetSeatsForTheater(context *gin.Context) {
 
 	screenSeatMapping := make(map[string][]models.Seat)
 	for _, element := range screenSeats {
-		screenSeatMapping[element.ScreenCompReferId] = append(screenSeatMapping[element.ScreenCompReferId], models.Seat{
+		screenSeatMapping[element.ScreenReferId] = append(screenSeatMapping[element.ScreenReferId], models.Seat{
 			SeatId:   element.SeatId,
 			SeatName: element.SeatName,
 		})

@@ -12,8 +12,8 @@ import (
 )
 
 type ScreenSeats struct {
-	ScreenCompReferId string `json:"screenId"`
-	NumSeats          int    `json:"numSeats"`
+	ScreenReferId string `json:"screenId"`
+	NumSeats      int    `json:"numSeats"`
 }
 
 type AddSeatsRequest struct {
@@ -34,8 +34,8 @@ func AddSeats(context *gin.Context) {
 
 			for seat := 0; seat < screenSeat.NumSeats; seat++ {
 				seats = append(seats, &models.Seat{
-					SeatName:          getSeatName(seat),
-					ScreenCompReferId: screenSeat.ScreenCompReferId,
+					SeatName:      getSeatName(seat),
+					ScreenReferId: screenSeat.ScreenReferId,
 				})
 			}
 			err := database.CreateSeats(seats)
