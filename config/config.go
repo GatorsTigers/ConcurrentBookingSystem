@@ -22,7 +22,7 @@ func GetConfig() *Config {
 		DB: &DBConfig{
 			Host:     "localhost",
 			User:     "root",
-			Password: "mysql123",
+			Password: "gatortiger",
 			Dbname:   "ConcurrentBookingSystem",
 			Port:     "3306",
 			Sslmode:  "disable",
