@@ -29,6 +29,7 @@ func AddSeats(context *gin.Context) {
 		})
 	} else {
 		var seats []models.Seat
+		// TODO: Not parsing for multiple screens- Only first screen seats are being added
 		for screen := 0; screen < len(request.ScreenSeats); screen++ {
 			screenSeat := request.ScreenSeats[screen]
 
