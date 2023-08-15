@@ -6,7 +6,7 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 )
 
-func CreateSeats(seats []*models.Seat) error {
+func CreateSeats(seats *[]models.Seat) error {
 
 	if txn := DbInstance.Db.Create(seats); txn.Error != nil {
 		return txn.Error

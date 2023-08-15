@@ -80,7 +80,6 @@ func AddShowsInTheatre(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, "Couldn't parse screen show schedule request")
 	} else {
 		err := database.AddShowsInTheatre(&shows)
-		//TODO: Add Show_seat
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not add shows in theater",
@@ -114,7 +113,7 @@ func GetSeatsForTheater(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not get seats for theater %s", err))
 	}
 
-	screenSeatMapping := make(map[string][]models.Seat)
+	screenSeatMapping := make(map[uint32][]models.Seat)
 	for _, element := range screenSeats {
 		screenSeatMapping[element.ScreenReferId] = append(screenSeatMapping[element.ScreenReferId], models.Seat{
 			SeatId:   element.SeatId,

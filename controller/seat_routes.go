@@ -12,13 +12,13 @@ import (
 )
 
 type ScreenSeats struct {
-	ScreenReferId string `json:"screenId"`
+	ScreenReferId uint32 `json:"screenId"`
 	NumSeats      int    `json:"numSeats"`
 }
 
 type AddSeatsRequest struct {
-	TheaterCompReferId uint32         `json:"theaterId"`
-	ScreenSeats        []*ScreenSeats `json:"screenSeats"`
+	TheaterCompReferId uint32        `json:"theaterId"`
+	ScreenSeats        []ScreenSeats `json:"screenSeats"`
 }
 
 func AddSeats(context *gin.Context) {
@@ -28,25 +28,24 @@ func AddSeats(context *gin.Context) {
 			"error": "could not parse theater response",
 		})
 	} else {
-		var seats []*models.Seat
+		var seats []models.Seat
 		for screen := 0; screen < len(request.ScreenSeats); screen++ {
 			screenSeat := request.ScreenSeats[screen]
 
 			for seat := 0; seat < screenSeat.NumSeats; seat++ {
-				seats = append(seats, &models.Seat{
+				seats = append(seats, models.Seat{
 					SeatName:      getSeatName(seat),
 					ScreenReferId: screenSeat.ScreenReferId,
 				})
 			}
-			err := database.CreateSeats(seats)
+			err := database.CreateSeats(&seats)
 			if err != nil {
 				context.JSON(http.StatusConflict, gin.H{
 					"error": fmt.Sprintf("%s", err),
 				})
 			} else {
-				context.JSON(http.StatusOK, &seats)
+				context.JSON(http.StatusOK, seats)
 			}
-
 		}
 
 	}
