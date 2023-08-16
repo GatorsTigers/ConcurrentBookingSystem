@@ -7,21 +7,33 @@ import (
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
+type BookSeatRequest struct {
+	EmailId     string // consider using it from cookie/session
+	ShowSeatIds []uint32
+}
+
 func BookTicket(context *gin.Context) {
-	var ticket []models.Ticket
-	if err := context.BindJSON(&ticket); err != nil {
+	var request BookSeatRequest
+	ticket := &models.Ticket{
+		EmailReferId:     request.EmailId,
+		Amount:           database.GetTotalBookingAmount(request.ShowSeatIds),
+		BankTranactionId: uuid.NewString(),
+	}
+	if err := context.BindJSON(&request); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("could not parse ticket request %s", err),
+			"error": fmt.Sprintf("could not parse booking request %s", err),
 		})
 	} else {
-		err = database.BookSelectedSeats(&ticket)
+		err = database.BookSelectedSeats(ticket)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not book ticket",
 			})
 		} else {
+			database.UpdateShowSeats(ticket.TicketId, request.ShowSeatIds)
 			context.JSON(http.StatusOK, ticket)
 		}
 	}

@@ -23,7 +23,7 @@ func AddShowsInTheatre(shows *[]models.Show) error {
 		"left join screens on screens.screen_id = shows.screen_refer_id " +
 		"left join seats on seats.screen_refer_id = screens.screen_id " +
 		"where shows.show_id in (?)"
-	if txn := DbInstance.Db.Raw(query, getParsedShowIds(showIdSlice)).Scan(&showSeats); txn.Error != nil {
+	if txn := DbInstance.Db.Raw(query, getParsedIds(showIdSlice)).Scan(&showSeats); txn.Error != nil {
 		return txn.Error
 	}
 	if txn := DbInstance.Db.Create(showSeats); txn.Error != nil {
@@ -32,7 +32,7 @@ func AddShowsInTheatre(shows *[]models.Show) error {
 	return nil
 }
 
-func getParsedShowIds(showIdSlice []uint32) string {
+func getParsedIds(showIdSlice []uint32) string {
 	var showIdStrings []string
 	for _, i := range showIdSlice {
 		showIdStrings = append(showIdStrings, strconv.FormatUint(uint64(i), 10))

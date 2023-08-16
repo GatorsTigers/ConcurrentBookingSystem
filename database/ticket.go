@@ -1,8 +1,10 @@
 package database
 
-import "github.com/GatorsTigers/ConcurrentBookingSystem/models"
+import (
+	"github.com/GatorsTigers/ConcurrentBookingSystem/models"
+)
 
-func BookSelectedSeats(ticket *[]models.Ticket) error {
+func BookSelectedSeats(ticket *models.Ticket) error {
 	if txn := DbInstance.Db.Create(&ticket); txn.Error != nil {
 		return txn.Error
 	}
