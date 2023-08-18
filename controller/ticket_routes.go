@@ -27,15 +27,14 @@ func BookTicket(context *gin.Context) {
 			Amount:           database.GetTotalBookingAmount(request.ShowSeatIds),
 			BankTranactionId: uuid.NewString(),
 		}
-		err = database.BookSelectedSeats(ticket)
+
+		err = database.BookSelectedSeats(ticket, request.ShowSeatIds)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not book ticket",
 			})
 		} else {
-			if booked := database.UpdateShowSeats(ticket.TicketId, request.ShowSeatIds); !booked {
-				context.AbortWithStatusJSON(http.StatusConflict, "could not book the requested seats")
-			}
+
 			context.JSON(http.StatusOK, ticket)
 		}
 	}

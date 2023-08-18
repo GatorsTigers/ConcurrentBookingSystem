@@ -16,3 +16,11 @@ func UpdateShowSeats(ticketId uint32, showSeatIds []uint32) bool {
 	}
 	return true
 }
+
+func FetchShowSeats(showSeatIds []uint32) []models.ShowSeat {
+	var showSeats []models.ShowSeat
+	if txn := DbInstance.Db.Model(&models.ShowSeat{}).Where("show_seat_id in ? and is_available=true", showSeatIds).Find(&showSeats); txn.Error != nil {
+		panic(txn.Error)
+	}
+	return showSeats
+}
