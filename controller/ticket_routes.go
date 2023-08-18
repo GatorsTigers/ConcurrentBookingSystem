@@ -11,29 +11,31 @@ import (
 )
 
 type BookSeatRequest struct {
-	EmailId     string // consider using it from cookie/session
-	ShowSeatIds []uint32
+	EmailId     string   `json:"emailId"` // consider using it from cookie/session
+	ShowSeatIds []uint32 `json:"showSeatIds"`
 }
 
 func BookTicket(context *gin.Context) {
 	var request BookSeatRequest
-	ticket := &models.Ticket{
-		EmailReferId:     request.EmailId,
-		Amount:           database.GetTotalBookingAmount(request.ShowSeatIds),
-		BankTranactionId: uuid.NewString(),
-	}
 	if err := context.BindJSON(&request); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": fmt.Sprintf("could not parse booking request %s", err),
 		})
 	} else {
+		ticket := &models.Ticket{
+			EmailReferId:     request.EmailId,
+			Amount:           database.GetTotalBookingAmount(request.ShowSeatIds),
+			BankTranactionId: uuid.NewString(),
+		}
 		err = database.BookSelectedSeats(ticket)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not book ticket",
 			})
 		} else {
-			database.UpdateShowSeats(ticket.TicketId, request.ShowSeatIds)
+			if booked := database.UpdateShowSeats(ticket.TicketId, request.ShowSeatIds); !booked {
+				context.AbortWithStatusJSON(http.StatusConflict, "could not book the requested seats")
+			}
 			context.JSON(http.StatusOK, ticket)
 		}
 	}
