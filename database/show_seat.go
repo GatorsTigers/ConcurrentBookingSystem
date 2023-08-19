@@ -11,7 +11,7 @@ func GetTotalBookingAmount(showSeatIds []uint32) float64 {
 }
 
 func UpdateShowSeats(ticketId uint32, showSeatIds []uint32) bool {
-	if txn := DbInstance.Db.Model(&models.ShowSeat{}).Where("show_seat_id in ?", showSeatIds).UpdateColumns(models.ShowSeat{TicketReferId: ticketId, IsAvailable: false}); txn.Error != nil {
+	if txn := DbInstance.Db.Model(&models.ShowSeat{}).Where("show_seat_id in ?", showSeatIds).Updates(map[string]interface{}{"ticket_refer_id": ticketId, "is_available": false}); txn.Error != nil {
 		panic(txn.Error)
 	}
 	return true

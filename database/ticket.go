@@ -5,6 +5,11 @@ import (
 )
 
 func BookSelectedSeats(ticket *models.Ticket, ShowSeatIds []uint32) error {
+	err := DbInstance.Db.Exec(`set transaction isolation level SERIALIZABLE`).Error
+	if err != nil {
+		return err
+	}
+
 	tx := DbInstance.Db.Begin()
 
 	if len(FetchShowSeats(ShowSeatIds)) != len(ShowSeatIds) {
