@@ -11,16 +11,15 @@ func CreateTheaters(theaters *[]models.Theater) error {
 	return nil
 }
 
-func ShowTheaters() ([]models.Theater, error) {
-	var theaters []models.Theater
-	if txn := DbInstance.Db.Find(&theaters); txn.Error != nil {
-		return theaters, txn.Error
+func ShowTheaters(theaters *[]models.Theater) error {
+	if txn := DbInstance.Db.Find(theaters); txn.Error != nil {
+		return txn.Error
 	}
-	return theaters, nil
+	return nil
 }
 
-func GetCityTheatres(cityName string, theaters *[]models.Theater) error {
-	if txn := DbInstance.Db.Where("city_refer_name = ?", cityName).Find(theaters); txn.Error != nil {
+func GetCityTheatres(cityId uint32, theaters *[]models.Theater) error {
+	if txn := DbInstance.Db.Where("city_refer_id = ?", cityId).Find(theaters); txn.Error != nil {
 		return txn.Error
 	}
 	return nil

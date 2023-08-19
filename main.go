@@ -29,21 +29,28 @@ func serveApplication() {
 	theater.GET("", controller.ShowTheaters)
 	theater.GET("/city", controller.GetTheatresByCity)
 	theater.POST("/addShow", controller.AddShowsInTheatre)
-	theater.POST("/show/schedule", controller.AddScreenShowScheduleInTheatre)
 	theater.GET("/getShow", controller.GetShowsForTheatre)
+	theater.GET("/getSeats", controller.GetSeatsForTheater)
 
 	screen := router.Group("/screen")
 	screen.POST("", controller.AddScreens)
 	screen.GET("", controller.ShowScreens)
 
-	show := router.Group("/show")
-	show.POST("", controller.AddShows)
-	show.GET("", controller.GetShows)
+	movie := router.Group("/movie")
+	movie.POST("", controller.AddMovies)
+	movie.GET("", controller.GetMovies)
+
+	seats := router.Group("/seat")
+	seats.POST("", controller.AddSeats)
 
 	auth := router.Group("/auth")
 	auth.POST("/register", controller.RegisterUser)
 	auth.POST("/login", controller.LoginUser)
 	auth.POST("/logout", controller.LogoutUser)
+
+	ticket := router.Group("/ticket")
+	ticket.POST("", controller.BookTicket)
+	ticket.GET("", controller.GetUserTickets)
 
 	router.Run(":8000")
 	log.Println("Server running on port 8000")

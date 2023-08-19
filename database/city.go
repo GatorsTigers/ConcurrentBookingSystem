@@ -11,10 +11,9 @@ func CreateCities(cities *[]models.City) (*[]models.City, error) {
 	return cities, nil
 }
 
-func ShowCities() ([]models.City, error) {
-	var cities []models.City
-	if txn := DbInstance.Db.Find(&cities); txn.Error != nil {
-		return nil, txn.Error
+func ShowCities(cities *[]models.City) error {
+	if txn := DbInstance.Db.Find(cities); txn.Error != nil {
+		return txn.Error
 	}
-	return cities, nil
+	return nil
 }

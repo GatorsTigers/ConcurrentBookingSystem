@@ -11,10 +11,9 @@ func CreateScreens(screens *[]models.Screen) error {
 	return nil
 }
 
-func ShowScreens() ([]models.Screen, error) {
-	var screens []models.Screen
-	if txn := DbInstance.Db.Find(&screens); txn.Error != nil {
-		return screens, txn.Error
+func ShowScreens(screens *[]models.Screen) error {
+	if txn := DbInstance.Db.Find(screens); txn.Error != nil {
+		return txn.Error
 	}
-	return screens, nil
+	return nil
 }

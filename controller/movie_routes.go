@@ -9,32 +9,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddShows(context *gin.Context) {
-	var showsRequest []models.Show
+func AddMovies(context *gin.Context) {
+	var moviesRequest []models.Movie
 
-	if err := context.BindJSON(&showsRequest); err != nil {
+	if err := context.BindJSON(&moviesRequest); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not parse show response",
 		})
 	} else {
-		err := database.CreateShows(&showsRequest)
+		err := database.CreateMovies(&moviesRequest)
 		if err != nil {
 			context.JSON(http.StatusConflict, gin.H{
 				"error": fmt.Sprintf("%s", err),
 			})
 		} else {
-			context.JSON(http.StatusOK, showsRequest)
+			context.JSON(http.StatusOK, moviesRequest)
 		}
 	}
 }
 
-func GetShows(context *gin.Context) {
-	shows, err := database.GetShows()
+func GetMovies(context *gin.Context) {
+	var movies []models.Movie
+	err := database.GetMovies(&movies)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "could not get cities",
 		})
 	} else {
-		context.JSON(http.StatusOK, shows)
+		context.JSON(http.StatusOK, movies)
 	}
 }

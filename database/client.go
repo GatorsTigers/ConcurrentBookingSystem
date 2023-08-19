@@ -21,15 +21,18 @@ type DatabaseInstance struct {
 }
 
 func NewDatabaseClient(config *config.Config) *DatabaseInstance {
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	createDBDsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/",
 		config.DB.User,
 		config.DB.Password,
 		config.DB.Host,
 		config.DB.Port,
-		config.DB.Dbname,
 	)
 
-	database, err := gorm.Open(mysql.Open(dbURI), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open(createDBDsn), &gorm.Config{})
+	_ = database.Exec("CREATE DATABASE IF NOT EXISTS " + config.DB.Dbname + ";")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", config.DB.User, config.DB.Password, config.DB.Host, config.DB.Port, config.DB.Dbname)
+	database, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logger.Fatal("Could not connect to the database")
 		return nil
@@ -63,13 +66,13 @@ func (i *DatabaseInstance) Ready() bool {
 func (i *DatabaseInstance) CreateTables() {
 	if err := i.Db.AutoMigrate(
 		&models.City{},
-		&models.Show{},
+		&models.Movie{},
 		&models.Theater{},
 		&models.User{},
-		&models.TheaterShow{},
 		&models.Screen{},
 		&models.Seat{},
-		&models.ScreenShowSchedule{},
+		&models.Show{},
+		&models.ShowSeat{},
 		&models.Ticket{},
 	); err != nil {
 		logger.Fatal("Failed to create the tables")

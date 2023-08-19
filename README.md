@@ -1,5 +1,12 @@
+# Todo
+Add payment details in ticket
 # ConcurrentBookingSystem
 Concurrent ticket booking system.
+
+Project Description
+Database model (ERD Diagram)
+
+![alt text](https://github.com/GatorsTigers/ConcurrentBookingSystem/blob/4-add-routes/CBMS.jpeg?raw=true)
 
 # Project setup
 * Go requires you to organize your code within a specific workspace directory.
