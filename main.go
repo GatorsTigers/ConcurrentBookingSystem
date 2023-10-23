@@ -2,11 +2,13 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/GatorsTigers/ConcurrentBookingSystem/config"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/controller"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/database"
 	"github.com/GatorsTigers/ConcurrentBookingSystem/logger"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +22,16 @@ func main() {
 
 func serveApplication() {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "X-Requested-With, Content-Type, Accept, Authorization"},
+		ExposeHeaders:    []string{"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	cityGroup := router.Group("/city")
 	cityGroup.POST("", controller.CreateCities)
 	cityGroup.GET("", controller.ShowCities)
