@@ -33,7 +33,7 @@ func GetMovies(context *gin.Context) {
 	err := database.GetMovies(&movies)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "could not get cities",
+			"error": "could not get movies",
 		})
 	} else {
 		context.JSON(http.StatusOK, movies)

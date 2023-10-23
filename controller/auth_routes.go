@@ -160,7 +160,7 @@ func RegisterUser(context *gin.Context) {
 		// Add user
 		err := database.AddUser(&user)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, err.Error())
+			context.JSON(http.StatusBadRequest, fmt.Sprintf("Could not add user %v", err.Error()))
 		} else {
 			context.JSON(http.StatusOK, "Registration Successfull")
 		}
